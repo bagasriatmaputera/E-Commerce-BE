@@ -1,0 +1,27 @@
+1. npm init -y
+
+2. npm install jsonwebtoken cookie-parser bcrypt cors dotenv express multer prisma @prisma/client 
+    bcrypt → untuk hashing password sebelum disimpan ke database, supaya lebih aman.
+    jsonwebtoken (JWT) → untuk autentikasi (generate & verifikasi token login user).
+    prisma → ORM (Object Relational Mapping), membantu mengelola database dengan query lebih mudah.
+    @prisma/client → library yang dipakai di project untuk akses database via Prisma (hasil generate dari schema).
+    express → framework Node.js untuk membangun REST API (routing, middleware, request/response).
+    cookie-parser → middleware untuk baca & parse cookie dari request (misalnya simpan token login).
+    cors → mengatur Cross-Origin Resource Sharing, agar frontend (React) bisa request ke backend (Express).
+    dotenv → untuk menyimpan konfigurasi sensitif (seperti DB_URL, JWT_SECRET) di file .env.
+    multer → middleware untuk upload file (misalnya upload gambar produk).
+
+3. npm install nodemon --save-dev
+    nodemon itu agar tidak refresshh
+
+4. buat file sever.js dan .env
+
+5 buat folder dan rapihkan struktur path 
+    src/
+        controllers
+        middlewares
+        routes
+        utils
+        config
+
+6. 
