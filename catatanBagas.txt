@@ -12,7 +12,7 @@
     multer → middleware untuk upload file (misalnya upload gambar produk).
 
 3. npm install nodemon --save-dev
-    nodemon itu agar tidak refresshh
+    nodemon itu agar tidak perlu refresshh local server ketika ada perubahan
 
 4. buat file sever.js dan .env
 
@@ -24,4 +24,100 @@
         utils
         config
 
-6. 
+6. pada server.js tambahkan berikut ini
+    import express from "express";
+    import doenv from "dotenv";
+    import cors from "cors";
+    import cookieParser from "cookie-parser";
+    
+7. pada server.js tambahkan
+    import authRoutes from "./routes/auth.route.js";
+    import inventoryRoutes from "./routes/inventories.route.js";
+    import productRoutes from "./routes/product.route.js";
+    import cartRoutes from "./routes/cart.route.js";
+    import invoiceRoutes from "./routes/invoice.route.js";
+    import statisticRoutes from "./routes/invoice.route.js";
+
+8. Tambahkan ini di server.js
+    // port
+    const PORT = process.env.PORT || 5000;
+
+    // middleware
+    app.use(cookieParser());
+    app.use(express.json());
+    app.use(express.urlencoded({extended: true}));
+    app.use(cors())
+
+    // Routes
+    app.use("/api/auth", authRoutes);
+    app.use("/api/inventories", inventoryRoutes);
+    app.use("/api/products", productRoutes);
+    app.use("/api/cart", cartRoutes);
+    app.use("/api/invoice", invoiceRoutes);
+    app.use("/api/statistic", statisticRoutes);
+
+    app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`)
+    })
+
+9. pada folder utils, tambahakan response.js cookieOptions.js
+
+10. pada response.js, tambahkan function handle successRespone dan errorResponse
+    export const successResponse = (res, message, data = null, status = 200) => {
+        return res.status(status).json({
+            success: true,
+            message,
+            data
+        })
+    }
+
+    export const errorResponse = (res, message, data = null, status = 200) => {
+        return res.status(status).json({
+            success: false,
+            message,
+            data
+        })
+    }
+
+11. pada file cookieOptions, tambahkan berikut ini untuk atur cookies
+    const cookieOptions = (req) => {
+        const isProduction = process.env.NODE_ENV === "producton"
+
+        return {
+            httpOnly: true,
+            secure: isProduction && req.hostname !== "localhost",
+            sameSite: "Strict",
+            path:"/",
+            maxAge: 24 * 60 * 60 * 1000, // 1 hari
+        }
+    }
+
+    - pada file .env tambahkan NODE_ENV = localhost
+
+    export default cookieOptions;
+
+12. pada folder middleware, tambahkan file 
+    uploud.js -> untuk multer
+    verifyToken.js -> untuk jsonwebtoken (JWT)
+
+13. pada file middleware/verifyToken.js, tambahkan
+    import jwt from 'jsonwebtoken';
+
+    const JWT_SECRET = process.env.JWT_SECRET || "secret"
+
+    const verifyToken = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if(!authHeader) return res.status(401).json({ error: "Token Required"})
+
+    const token = authHeader.split('')[1];
+
+    try {
+        const decode = jwt.verify(token, JWT_SECRET);
+        req.user = decode;
+        next();
+    } catch (error) {
+        res.status(401).json({ error: "Token tidak valid"})
+    }
+    }
+
+    - pada file .env, tambahkan JWT_SECRET = **random**
